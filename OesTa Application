@@ -1,0 +1,956 @@
+import streamlit as st
+st.set_page_config(layout="wide")
+import pandas as pd
+import io
+import numpy as np
+from st_aggrid import GridOptionsBuilder, AgGrid, GridUpdateMode, DataReturnMode
+import zipfile
+import base64
+import os
+from pandas_profiling import ProfileReport
+from streamlit_pandas_profiling import st_profile_report
+import neattext as nt
+from autocorrect import Speller
+import spacy
+en_core = spacy.load('en_core_web_sm')
+spell = Speller(lang='en')
+import plotly.express as px
+from PIL import Image
+from textblob import TextBlob, Word
+from textblob import TextBlob
+from streamlit_option_menu import option_menu
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import plotly.graph_objects as go
+import seaborn as sns
+import matplotlib.pyplot as plt
+from io import StringIO
+from wordcloud import WordCloud 
+from matplotlib import colors         
+from nltk.corpus import stopwords           
+color_list=['#4d4d4d','#ffcc00','#000000',]            
+colormap=colors.ListedColormap(color_list)            
+from collections import Counter
+from nltk.tokenize import word_tokenize
+from sklearn.feature_extraction.text import CountVectorizer
+import re
+import json
+import requests  # pip install requests
+import streamlit as st  # pip install streamlit
+from streamlit_lottie import st_lottie  # pip install streamlit-lottie
+from nltk.tokenize import sent_tokenize, word_tokenize 
+from pandarallel import pandarallel
+import nltk
+nltk.download('words')
+from nltk.corpus import words
+word_list = words.words()
+import altair as alt
+
+
+st.sidebar.image("usw.png", use_column_width=True)
+st.sidebar.markdown('👩‍🎓👩‍🔧👩‍💻👩‍🚀👩‍🚒🕵️‍♂️👮👩‍🚒👩‍🎨👩‍🔬👨‍🏫👩‍⚕️👨‍🏭👨‍✈️👷')
+st.sidebar.image("uswfs.PNG", use_column_width=None)
+st.sidebar.markdown('👩‍🎓👩‍🔧👩‍💻👩‍🚀👩‍🚒🕵️‍♂️👮👩‍🚒👩‍🎨👩‍🔬👨‍🏫👩‍⚕️👨‍🏭👨‍✈️👷')
+
+
+
+
+# background image to streamlit
+
+@st.cache(allow_output_mutation=True)
+def get_base64_of_bin_file(bin_file):
+    with open(bin_file, 'rb') as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+def set_png_as_page_bg(png_file):
+    bin_str = get_base64_of_bin_file(png_file) 
+    page_bg_img = '''
+    <style>
+    .stApp {
+    background-image: url("data:image/png;base64,%s");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: scroll; # doesn't work
+    }
+    </style>
+    ''' % bin_str
+    
+    st.markdown(page_bg_img, unsafe_allow_html=True)
+    return
+
+set_png_as_page_bg('black.jpg')
+
+def main_page():
+    
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        def load_lottieurl(url: str):
+            r = requests.get(url)
+            if r.status_code != 200:
+                return None
+            return r.json()
+
+
+        st.info('Welcome to Oesta! Your one stop solution for open ended survey analysis')
+    
+        def load_lottieurl(url: str):
+            r = requests.get(url)
+            if r.status_code != 200:
+                return None
+            return r.json()
+
+
+        lottie_hello = load_lottieurl("https://assets9.lottiefiles.com/packages/lf20_49rdyysj.json")
+
+        st_lottie(
+            lottie_hello,
+            speed=1,
+            reverse=False,
+            loop=True,
+            quality="low",# medium ; high
+            height=400,
+            width=800,
+            key=None,
+        )
+    
+        st.info('Intuitively designed to cater everything you need to do to analyse open ended surveys')
+        def load_lottieurl(url: str):
+            r = requests.get(url)
+            if r.status_code != 200:
+                return None
+            return r.json()
+
+
+        lottie_hello = load_lottieurl("https://assets2.lottiefiles.com/packages/lf20_2FrNS5.json")
+
+        st_lottie(
+            lottie_hello,
+            speed=1,
+            reverse=False,
+            loop=True,
+            quality="low",# medium ; high
+            height=400,
+            width=750,
+            key=None,
+        )
+        
+        st.info('Usage of counter for open-ended resposnses can be utilized')
+        
+        lottie_hello1 = load_lottieurl("https://assets7.lottiefiles.com/packages/lf20_x17ybolp.json")
+
+        st_lottie(
+            lottie_hello1,
+            speed=1,
+            reverse=False,
+            loop=True,
+            quality="low",# medium ; high
+            height=400,
+            width=750,
+            key=None,
+        )
+    
+        
+        
+    
+    with col2:
+        
+        image = Image.open('logo.png')
+        st.image(image, width=850)
+
+     
+        lottie_hello1 = load_lottieurl("https://assets8.lottiefiles.com/packages/lf20_yrruhev9.json")
+
+        st_lottie(
+            lottie_hello1,
+            speed=1,
+            reverse=False,
+            loop=True,
+            quality="low",# medium ; high
+            height=200,
+            width=750,
+            key=None,
+        )
+    
+        st.info('Designed to be as easy as clicking a button')
+       
+        lottie_hello1 = load_lottieurl("https://assets1.lottiefiles.com/packages/lf20_vktpsg4v.json")
+
+        st_lottie(
+            lottie_hello1,
+            speed=1,
+            reverse=False,
+            loop=True,
+            quality="low",# medium ; high
+            height=400,
+            width=750,
+            key=None,
+        )
+    
+        st.info('Provides data visualization for your needs')
+    
+      
+             
+    
+    with col3:
+        st.info('You can have the option to upload and download the files for your report')
+    
+        lottie_hello1 = load_lottieurl("https://assets10.lottiefiles.com/packages/lf20_komemhfl.json")
+
+        st_lottie(
+            lottie_hello1,
+            speed=1,
+            reverse=False,
+            loop=True,
+            quality="low",# medium ; high
+            height=300,
+            width=750,
+            key=None,
+        )
+    
+        st.info('Filter the data based on your preference with a touch of a button')
+    
+        lottie_hello1 = load_lottieurl("https://assets7.lottiefiles.com/packages/lf20_lqge6px5.json")
+
+        st_lottie(
+            lottie_hello1,
+            speed=1,
+            reverse=False,
+            loop=True,
+            quality="low",# medium ; high
+            height=500,
+            width=750,
+            key=None,
+        )
+
+        st.info('Have the ability to merge data and rename columns')
+    
+        lottie_hello1 = load_lottieurl("https://assets4.lottiefiles.com/packages/lf20_vn9fcqz8.json")
+
+        st_lottie(
+            lottie_hello1,
+            speed=1,
+            reverse=False,
+            loop=True,
+            quality="low",# medium ; high
+            height=500,
+            width=780,
+            key=None,
+        )
+
+###################################################################
+
+    
+def page2():
+    st.markdown("# Filter📁")
+    st.sidebar.markdown("### This allows you to filter your data, merge all the datas you need and rename your data before jumping into analysis")
+
+    multiple_files = st.file_uploader(" ",type="csv", accept_multiple_files=True)
+    for file in multiple_files:
+        filterdf = pd.read_csv(file)
+        file.seek(0)
+    
+        gb = GridOptionsBuilder.from_dataframe(filterdf)
+        gb.configure_pagination(paginationAutoPageSize=True) #Add pagination
+        gb.configure_side_bar() #Add a sidebar
+        gb.configure_selection('multiple') #Enable multi-row selection
+        gridOptions = gb.build()
+
+        grid_response = AgGrid(
+            filterdf,
+            gridOptions=gridOptions,
+            data_return_mode='AS_INPUT', 
+            update_mode='MODEL_CHANGED', 
+            fit_columns_on_grid_load=False,
+            theme='blue', #Add theme color to the table
+            enable_enterprise_modules=True,
+            height=600, 
+            width='100%',
+            reload_data=False
+        )
+
+
+        data = grid_response['data']
+        selected = grid_response['selected_rows'] 
+        df = pd.DataFrame(selected) #Pass the selected rows to a new dataframe df
+        
+    st.markdown("# Merge📂")
+    st.sidebar.markdown("# ")
+
+    uploaded_files = st.file_uploader("Upload CSV", type="csv", accept_multiple_files=True)
+    if uploaded_files:
+        for file in uploaded_files:
+            file.seek(0)
+        uploaded_data_read = [pd.read_csv(file) for file in uploaded_files]
+        mergeddata = pd.concat(uploaded_data_read)
+        st.dataframe(mergeddata)
+        
+        @st.cache
+        def convert_df(df):
+         # IMPORTANT: Cache the conversion to prevent computation on every rerun
+            return df.to_csv().encode('utf-8')
+        
+        csv = convert_df(mergeddata)
+      
+        st.download_button(
+            label="Download File as CSV",
+            data=csv,
+            file_name='merged.csv',
+            mime='text/csv',
+         )
+    
+###################################################################
+
+def page3():
+    st.markdown("# Exploratory Data Analysis 🔎")
+    st.sidebar.markdown("### Know more about your data by uploading the data here after renaming the file. This provides you some insights what your data has")
+
+    # Upload CSV data
+    uploaded_file = st.file_uploader("Upload Renamed File Here", type=["csv"])
+  
+    # Pandas Profiling Report
+    if uploaded_file is not None:
+        def load_csv():
+            csv = pd.read_csv(uploaded_file)
+            return csv
+        edadf = load_csv()
+        pr = ProfileReport(edadf, explorative=True)
+        st.header('**Input DataFrame**')
+        st.write(edadf)
+        st.write('---')
+        st.header('**Pandas Profiling Report**')
+        st_profile_report(pr)
+    else:
+        st.info('Awaiting for CSV file to be uploaded.')
+            # Example data
+        def load_data():
+            edadf = load_data()
+            pr = ProfileReport(edadf, explorative=True)
+            st.header('**Input DataFrame**')
+            st.write(edadf)
+            st.write('---')
+            st.header('**Pandas Profiling Report**')
+            st_profile_report(pr)
+            
+#####################################################################
+        
+def page4():
+    st.markdown("# Rename📝 and Document Cleaner🧹 ")
+    st.sidebar.markdown("### Rename the docuemnt and clean the text file for analysis")
+    
+    text_file = st.file_uploader("Upload CSV File", type=['csv'])
+    if text_file is not None:
+        rdcdf= pd.read_csv(text_file)
+        st.write(rdcdf)
+
+        with st.form(key="form"):
+            col_to_change = st.selectbox("Column to change", rdcdf.columns)
+            new_col_name = st.text_input("New name", value="")
+            submit_button = st.form_submit_button(label='Rename')
+
+        if submit_button:
+            rdcdf = rdcdf.rename(columns={col_to_change: new_col_name})
+
+            rdcdf['Sentiment File'] = rdcdf['Text'].apply(str.lower)
+            rdcdf["Sentiment File"] = rdcdf['Sentiment File'].apply(lambda x: " ".join([y.lemma_ for y in en_core(x)]))
+        
+            sentdf = rdcdf.copy()
+        
+            sentdf['Sentiment File'] = sentdf['Sentiment File'].apply(nt.remove_punctuations)
+            sentdf['Sentiment File'] = sentdf['Sentiment File'].apply(nt.remove_numbers)
+            sentdf['Sentiment File'] = sentdf['Sentiment File'].apply(nt.remove_special_characters)
+            sentdf['Sentiment File'] = sentdf['Sentiment File'].apply(nt.remove_dates)
+            sentdf['Sentiment File'] = sentdf['Sentiment File'].apply(nt.remove_emojis)
+            sentdf1 = sentdf.copy()          
+            
+            sentdf3 = sentdf1[['Text','Sentiment File']].apply(lambda x: x.str.strip()).replace('', np.nan)
+   
+            sentdf3['Word File'] = sentdf3['Sentiment File'].apply(nt.remove_stopwords)
+            sentdf4 = sentdf3.copy()
+            st.dataframe(sentdf4)
+            
+            sentdf5 = sentdf4[['Text','Sentiment File', 'Word File']].apply(lambda x: x.str.strip()).replace('', np.nan)
+                                
+            ct1 = sentdf5['Text']
+            ct1 = ct1.dropna()
+            ct2 = sentdf5['Sentiment File']
+            ct2 = ct2.dropna()
+            ct3 = sentdf5['Word File']
+            ct3 = ct3.dropna()
+            
+            st.download_button(label='Download For Counter',data=ct1.to_csv(),file_name='counter.csv',mime='text/csv')
+            st.download_button(label='Download For Sentiment',data=ct2.to_csv(),file_name='sentiment.csv',mime='text/csv')
+            st.download_button(label='Download For Word Frequency',data=ct3.to_csv(),file_name='wordfrequency.csv',mime='text/csv')
+            
+
+
+#####################################################################
+            
+def page5():
+    st.markdown("# Sentiment Analyser 🤗🙁😐")
+    st.sidebar.markdown("### See the sentiments of each responses using this tab. Supported with the sentiments are the visualisations indicated.")
+        
+  
+    file = st.file_uploader("Please choose a file")
+    
+    if file is not None:
+        sdf= pd.read_csv(file)
+        #Can be used wherever a "file-like" object is accepted:
+
+        sdf['Polarity'] = sdf.apply(lambda x: TextBlob(x['Sentiment File']).sentiment.polarity, axis=1)
+        sdf['Subjectivity'] = sdf.apply(lambda x: TextBlob(x['Sentiment File']).sentiment.subjectivity, axis=1)
+    
+        def condition(x):
+            if x>0.01:
+                return "Positive"
+            elif x<0:
+                return "Negative"
+            else:
+                return 'Neutral'
+    
+        sdf['Sentiment'] = sdf['Polarity'].apply(condition)
+      
+        sdf1 = sdf.copy()
+        sdf2 = sdf.copy()
+        sfd3 = sdf2.astype(str)
+       
+        sdf1 = sdf1[["Sentiment File", "Polarity", "Subjectivity", "Sentiment"]]
+        st.write(sdf1)
+        
+        sdf5 = sdf1.copy()
+        sdf5['File'] = sdf5['Sentiment File'].apply(nt.remove_stopwords)
+     
+        st.download_button(label='Download Sentiment Report ',data=sdf1.to_csv(),file_name='sentimentreport.csv',mime='text/csv')
+                  
+        
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            st.markdown("### Bar Graph of Sentiment")
+            senti = sdf['Sentiment'].value_counts()
+            st.write(senti)
+        
+            color = {'Neutral':'bisque', 'Positive':'deepskyblue','Negative':'firebrick'}
+        
+            fig = plt.figure(figsize=(10, 3))
+            sns.set_style("darkgrid")
+            sns.countplot(x = 'Sentiment', data=sdf, palette=color)
+            st.pyplot(fig)
+        
+            st.markdown("### Positive Word Frequency")
+        
+            filtersent = sdf5[sdf5.Sentiment.isin(['Positive'])]
+                        
+            filtersent["text"] = filtersent['File']
+            sen_df = filtersent.text.str.split(expand=True).stack().value_counts().reset_index()
+            sen_df.columns = ['Positive Words', 'Frequency'] 
+            
+            cmBlue = sns.dark_palette("blue", as_cmap=True)
+            sendf3 = sen_df.style.background_gradient(
+                cmap=cmBlue,
+                subset=[
+                "Frequency",
+                ],
+            )
+            st.dataframe(sendf3)
+        
+            st.markdown("### Negative Word Frequency")
+        
+            filtersent2 = sdf5[sdf5.Sentiment.isin(['Negative'])]
+                        
+            filtersent2["text"] = filtersent2['File']
+            sen_df = filtersent2.text.str.split(expand=True).stack().value_counts().reset_index()
+            sen_df.columns = ['Negative Words', 'Frequency'] 
+            
+            cmPur = sns.dark_palette("purple", as_cmap=True)
+            sendf4 = sen_df.style.background_gradient(
+                cmap=cmPur,
+                subset=[
+                "Frequency",
+                ],
+            )
+            st.dataframe(sendf4)        
+        
+            st.markdown("### Neutral Word Frequency")
+                
+            filtersent3 = sdf5[sdf5.Sentiment.isin(['Neutral'])]
+                        
+            filtersent3["text"] = filtersent3['File']
+            sen_df = filtersent3.text.str.split(expand=True).stack().value_counts().reset_index()
+            sen_df.columns = ['Neutral Words', 'Frequency'] 
+            
+            cmOr = sns.dark_palette("orange", as_cmap=True)
+            sendf5 = sen_df.style.background_gradient(
+                cmap=cmOr,
+                subset=[
+                "Frequency",
+                ],
+            )
+            st.dataframe(sendf5)
+            st.markdown("### Sentiment Word Clouds")
+            
+            
+       
+            if st.checkbox('Generate Positive Word Cloud🤗'):
+                words = ' '.join([Text for Text in sdf5[sdf5['Sentiment']=='Positive']['File']])
+                wordCloud = WordCloud(background_color='black', colormap='Blues', min_font_size=4, max_font_size=200, width=3000, height=1000).generate(words)
+                plt.figure(figsize=(50, 50), facecolor='k')
+                plt.imshow(wordCloud, interpolation='bilinear')
+                plt.axis("off")
+                st.pyplot()
+                
+
+    
+            if st.checkbox('Generate Negative Word Cloud😔'):
+                words = ' '.join([Text for Text in sdf5[sdf5['Sentiment']=='Negative']['File']])
+                wordCloud = WordCloud(background_color='black', colormap='Reds', min_font_size=4, max_font_size=200, width=3000, height=1000).generate(words)
+                plt.figure(figsize=(50, 50), facecolor='k')
+                plt.imshow(wordCloud, interpolation='bilinear')
+                plt.axis("off")
+                st.pyplot()
+                st.set_option('deprecation.showPyplotGlobalUse', False)
+        
+            if st.checkbox('Generate Neutral Word Cloud😐'):
+                words = ' '.join([Text for Text in sdf5[sdf5['Sentiment']=='Neutral']['File']])
+                wordCloud = WordCloud(background_color='black', colormap='YlOrBr', min_font_size=4, max_font_size=200, width=3000, height=1000).generate(words)
+                plt.figure(figsize=(50, 50), facecolor='k')
+                plt.imshow(wordCloud, interpolation='bilinear')
+                plt.axis("off")
+                st.pyplot()
+                st.set_option('deprecation.showPyplotGlobalUse', False)
+              
+        with col3:
+            st.markdown("### Pie Chart of Sentiment by Subjectivity")
+            fig = px.pie(sdf, names='Sentiment', values='Subjectivity',hole=0.5, color='Sentiment', color_discrete_map={
+            'Positive': 'dodgerblue',
+            'Negative': 'indianred',
+            'Neutral':'bisque'})
+
+            st.plotly_chart(fig)
+            st.set_option('deprecation.showPyplotGlobalUse', False)  
+        
+            st.markdown("### 3D Scatter Plot of Sentiment")
+            fig = px.scatter_3d(sdf,x='Polarity',y='Subjectivity',z='Sentiment',color='Sentiment', color_discrete_map={
+            'Positive': 'dodgerblue',
+            'Negative': 'indianred',
+            'Neutral':'bisque'})
+            st.plotly_chart(fig)
+            st.set_option('deprecation.showPyplotGlobalUse', False)
+                       
+            st.markdown("### Subjectivity Histogram")        
+            fig = px.histogram(sdf, x="Subjectivity")
+            st.plotly_chart(fig)
+        
+            st.markdown("### Polarity Histogram")        
+            fig = px.histogram(sdf, x="Polarity")
+            st.plotly_chart(fig)
+            
+            
+        st.markdown('### Sentiment Topics')
+        
+        txt = st.text_area('Type topics chosen here', '')
+        nltk_tokens = nltk.word_tokenize(txt)
+         
+        keywords = nltk_tokens
+       
+        def operation(element):
+            res=",".join([(keyword) for keyword in keywords if (keyword in element)]) 
+            if res=="":
+                return "none" #handling no keyword situation
+            else:
+                return res
+        
+    
+        sdf2.insert(5, "topic", list(map(operation,list(sdf2.to_dict()['Sentiment File'].values()))), True)#insert of new array
+    
+        sdf2['Topics'] = sdf2['topic'].str.replace(',', ' ')
+    
+       
+        sdf2['Topics'] = sdf2['Topics'].apply(lambda x: word_tokenize(x))
+
+
+        finaldf = sdf2[["Sentiment File","Polarity","Subjectivity","Topics","Sentiment"]]
+        st.write(finaldf)
+                  
+        if st.button('View Downloadable File'):
+            (
+                f"""
+                🔆 View the topic and download it from here
+                """
+            )
+
+            gb = GridOptionsBuilder.from_dataframe(finaldf)
+            gb.configure_pagination(paginationAutoPageSize=True) #Add pagination
+            gb.configure_side_bar() #Add a sidebar
+            gb.configure_selection('multiple') #Enable multi-row selection
+            gridOptions = gb.build()
+
+            grid_response = AgGrid(
+                    finaldf,
+                    gridOptions=gridOptions,
+                    data_return_mode='AS_INPUT', 
+                    update_mode='MODEL_CHANGED', 
+                    fit_columns_on_grid_load=False,
+                    theme='blue', #Add theme color to the table
+                    enable_enterprise_modules=True,
+                    height=400,
+                    width=50,
+                    reload_data=False
+                    )
+
+            data = grid_response['data']
+            selected = grid_response['selected_rows'] 
+            df = pd.DataFrame(selected) #Pass the selected rows to a new dataframe df
+        
+                 
+        finaldf['Topics'] = finaldf['Topics'].apply(lambda x: ', '.join(set(x)))
+     
+        finaldf['Topics'] = finaldf['Topics'].replace(',', '', regex=True)
+       
+        finaldf["text"] = finaldf['Topics']
+        new_df1 = finaldf.text.str.split(expand=True).stack().value_counts().reset_index()
+        new_df1.columns = ['Topics', 'Frequency']
+    
+        st.dataframe(new_df1)
+        
+        st.download_button(label='Download Topic Count ',data=new_df1.to_csv(),file_name='topiccount.csv',mime='text/csv')
+        
+        st.markdown("### Negative Topics")
+    
+        filter1 = finaldf[finaldf.Sentiment.isin(['Negative'])]
+    
+        filter1["text"] = filter1["Topics"]
+        sen_df = filter1.text.str.split(expand=True).stack().value_counts().reset_index()
+        sen_df.columns = ['Topics', 'Frequency']
+        sen_df['Sentiment'] = 'Negative'
+            
+        cmPur = sns.dark_palette("purple", as_cmap=True)
+        sendd1 = sen_df.style.background_gradient(
+            cmap=cmPur,
+            subset=[
+            "Frequency",
+            ],
+            )
+        st.dataframe(sendd1)
+        
+        st.markdown("### Positive Topics")
+    
+        filter2 = finaldf[finaldf.Sentiment.isin(['Positive'])]
+    
+        filter2["text"] = filter2["Topics"]
+        sen_df = filter2.text.str.split(expand=True).stack().value_counts().reset_index()
+        sen_df.columns = ['Topics', 'Frequency']
+        sen_df['Sentiment'] = 'Positive'
+            
+        cmPur = sns.dark_palette("blue", as_cmap=True)
+        sendd2 = sen_df.style.background_gradient(
+            cmap=cmPur,
+            subset=[
+            "Frequency",
+            ],
+            )
+        st.dataframe(sendd2)
+  
+        st.markdown("### Neutral Topics")
+
+        filter3 = finaldf[finaldf.Sentiment.isin(['Neutral'])]
+    
+        filter3["text"] = filter3["Topics"]
+        sen_df = filter3.text.str.split(expand=True).stack().value_counts().reset_index()
+        sen_df.columns = ['Topics', 'Frequency']
+        sen_df['Sentiment'] = 'Neutral'
+            
+        cmPur = sns.dark_palette("orange", as_cmap=True)
+        sendd3 = sen_df.style.background_gradient(
+            cmap=cmPur,
+            subset=[
+            "Frequency",
+            ],
+            )
+        st.dataframe(sendd3)
+
+    
+        ###################################
+
+
+        filter1 = finaldf[finaldf.Sentiment.isin(['Negative'])]
+    
+        filter1["text"] = filter1["Topics"]
+        sen_df1 = filter1.text.str.split(expand=True).stack().value_counts().reset_index()
+        sen_df1.columns = ['Topics', 'Frequency']
+        sen_df1['Sentiment'] = 'Negative'
+     
+        filter2 = finaldf[finaldf.Sentiment.isin(['Positive'])]
+    
+        filter2["text"] = filter2["Topics"]
+        sen_df2 = filter2.text.str.split(expand=True).stack().value_counts().reset_index()
+        sen_df2.columns = ['Topics', 'Frequency']
+        sen_df2['Sentiment'] = 'Positive'
+    
+        filter3 = finaldf[finaldf.Sentiment.isin(['Neutral'])]
+    
+        filter3["text"] = filter3["Topics"]
+        sen_df3 = filter3.text.str.split(expand=True).stack().value_counts().reset_index()
+        sen_df3.columns = ['Topics', 'Frequency']
+        sen_df3['Sentiment'] = 'Neutral'
+               
+        frames = [sen_df1, sen_df2, sen_df3]
+
+        result = pd.concat(frames)
+        
+        fig = px.bar(result, x="Frequency", y="Topics", color="Sentiment", title="Sentiment By Topic Stack Chart",color_discrete_map={
+                'Positive': 'dodgerblue',
+                'Negative': 'indianred',
+                'Neutral':'bisque'}, height=800)
+        fig.update_layout(yaxis={'categoryorder':'total ascending'})
+        st.plotly_chart(fig)
+        
+        
+
+                    #####################################################################
+            
+def page6():
+    st.markdown("# Word Frequency Tab 🔤")
+    st.sidebar.markdown("### This tab provides you with a report and charts of the words included in your data. This also comprises of an intuitive graph to filter your choses row based on your preferred topic")
+
+   
+    wordfile = st.file_uploader("Upload CSV File",type=['csv'])
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if wordfile is not None:
+            wdf= pd.read_csv(wordfile)
+            st.dataframe(wdf['Word File'])
+                    
+            st.markdown('### Word Count')
+      
+            wdf["text"] = wdf['Word File']
+            new_df = wdf.text.str.split(expand=True).stack().value_counts().reset_index()
+            new_df.columns = ['Word', 'Frequency'] 
+            
+            cmGreen = sns.dark_palette("green", as_cmap=True)
+            cmRed = sns.light_palette("red", as_cmap=True)
+            newdf3 = new_df.style.background_gradient(
+                cmap=cmGreen,
+                subset=[
+                "Frequency",
+                ],
+            )
+            st.dataframe(newdf3)
+        
+            st.download_button(label='Download Word Count' ,data=new_df.to_csv(),file_name='words.csv',mime='text/csv')
+            
+            st.markdown('### Word Cloud')
+                
+            if st.button('Generate Word Cloud'):               
+                mask = np.array(Image.open("bee.png"))
+                words = ' '.join([Word for Word in new_df['Word']])
+                wordCloud = WordCloud(background_color=None, colormap='OrRd', min_font_size=4, max_font_size=100, width=3000, height=800, mask=mask, mode = 'RGB').generate(words)
+                plt.figure(figsize=(50, 50), facecolor='k')
+                plt.imshow(wordCloud, interpolation='bilinear')
+                plt.axis("off")
+                st.set_option('deprecation.showPyplotGlobalUse', False)
+                st.pyplot()
+                
+            st.markdown('### Word Frequency Graph')
+            fig = px.bar(new_df,
+            x = "Frequency",
+            y = "Word",
+            color="Frequency", width=800, height=1000,
+            orientation = 'h' #Optional Parameter
+            )
+            fig.update_layout(yaxis={'categoryorder':'total ascending'})
+            st.plotly_chart(fig)
+            
+            
+
+            #########################################
+                    
+            with col2:
+                st.markdown('#### Sunburst Plot of Words')
+                fig = px.sunburst(new_df, path=['Word', 'Frequency'], values='Frequency', color='Frequency')
+                st.plotly_chart(fig)
+                               
+                text = wdf['Word File'].tolist()
+        
+                coun_vect = CountVectorizer()
+                count_matrix = coun_vect.fit_transform(text)
+                count_array = count_matrix.toarray()
+        
+                wdf1 = pd.DataFrame(data=count_array,columns = coun_vect.get_feature_names())
+                wdf3 = pd.concat([wdf, wdf1], axis=1)
+            
+                wdf3 = pd.concat([wdf, wdf1], axis=1)
+                
+                st.markdown("### Word Checker ")    
+    
+                gb = GridOptionsBuilder.from_dataframe(wdf)
+                gb.configure_pagination(paginationAutoPageSize=True) #Add pagination
+                gb.configure_side_bar() #Add a sidebar
+                gb.configure_selection('multiple') #Enable multi-row selection
+                gridOptions = gb.build()
+
+                grid_response = AgGrid(
+                        wdf,
+                        gridOptions=gridOptions,
+                        data_return_mode='AS_INPUT', 
+                        update_mode='MODEL_CHANGED', 
+                        fit_columns_on_grid_load=False,
+                        theme='blue', #Add theme color to the table
+                        enable_enterprise_modules=True,
+                        height=400,
+                        width=50,
+                        reload_data=False
+                        )
+
+                data = grid_response['data']
+                selected = grid_response['selected_rows'] 
+                df = pd.DataFrame(selected) #Pass the selected rows to a new dataframe df
+            
+            #######################################################################
+
+def page7():
+    st.markdown("# Counter 🔢")
+    st.markdown("### Open-ended Question Counter")
+    st.sidebar.markdown("### Use to count open-ended responses that does not need any cleaning")
+
+    
+    counterfile = st.file_uploader("Upload CSV File",type=['csv'])
+
+    if counterfile is not None:
+              
+        col1, col2, col3 = st.columns(3)
+    
+        with col1:
+            st.markdown('## Responses')
+            counterdf= pd.read_csv(counterfile)
+            counterdf = counterdf[['Text']]
+            counterdf['Text'] = counterdf['Text'].apply(str.lower)
+            st.write(counterdf)
+            
+            st.markdown('## Count')
+            counterdf1 = counterdf['Text'].value_counts()\
+                 .to_frame('count').rename_axis('Values')\
+                 .reset_index()
+            st.write(counterdf1)
+                       
+            
+        with col2: 
+            st.markdown('## Viewer')         
+            st.info('Filter Based on Your Preference')  
+            
+            counterdf2 = counterdf1.copy()
+                
+            gb = GridOptionsBuilder.from_dataframe(counterdf2)
+            gb.configure_pagination(paginationAutoPageSize=True) #Add pagination
+            gb.configure_side_bar() #Add a sidebar
+            gb.configure_selection('multiple') #Enable multi-row selection
+            gridOptions = gb.build()
+
+            grid_response = AgGrid(
+                counterdf2,
+                gridOptions=gridOptions,
+                data_return_mode='AS_INPUT', 
+                update_mode='MODEL_CHANGED', 
+                fit_columns_on_grid_load=False,
+                theme='blue', #Add theme color to the table
+                enable_enterprise_modules=True,
+                height=300, 
+                width='100%',
+                reload_data=False
+            )
+
+
+            data = grid_response['data']
+            selected = grid_response['selected_rows'] 
+            counterdf2 = pd.DataFrame(selected) #Pass the selected rows to a new dataframe df
+            
+            st.markdown('## Bar Graph')
+            fig = px.bar(counterdf1, x='count', y='Values', color='count', width=1000, height=1000)
+            fig.update_layout(yaxis={'categoryorder':'total ascending'})
+            st.plotly_chart(fig)
+            
+            
+        with col3:
+            counterdf1 = counterdf['Text'].value_counts()\
+                 .to_frame('count').rename_axis('Responses')\
+                 .reset_index()
+            
+    st.markdown('### Closed-ended Question Counter')            
+  
+    counterfile2 = st.file_uploader(
+        "Upload CSV File",
+        key="1",
+        help="To activate 'wide mode', go to the hamburger menu > Settings > turn on 'wide mode'",
+    )
+
+    if counterfile2 is not None:
+        file_container = st.expander("Check your uploaded .csv")
+        closedshows = pd.read_csv(counterfile2)
+        counterfile2.seek(0)
+        file_container.write(closedshows)
+
+    else:
+        st.info("Check you closed ended questions here")
+
+        st.stop()
+
+    from st_aggrid import GridUpdateMode, DataReturnMode
+
+    gb = GridOptionsBuilder.from_dataframe(closedshows)
+    # enables pivoting on all columns, however i'd need to change ag grid to allow export of pivoted/grouped data, however it select/filters groups
+    gb.configure_default_column(enablePivot=True, enableValue=True, enableRowGroup=True)
+    gb.configure_selection(selection_mode="multiple", use_checkbox=True)
+    gb.configure_side_bar()  # side_bar is clearly a typo :) should by sidebar
+    gridOptions = gb.build()
+
+    st.success(
+        f"""
+        💡 Tip! Hold the shift key when selecting rows to select multiple rows at once!
+        """
+    )
+
+    response = AgGrid(
+        closedshows,
+        gridOptions=gridOptions,
+        enable_enterprise_modules=True,
+        update_mode=GridUpdateMode.MODEL_CHANGED,
+        data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
+        fit_columns_on_grid_load=False,
+        height=300, 
+        width=10,
+    )
+
+    df = pd.DataFrame(response["selected_rows"])
+          
+            
+page_names_to_funcs = {
+    "👣App Description": main_page,
+    "🧪Document Lab": page2,
+    "🔎Exploratory Data Analysis" :page3,
+    "📝Rename and Document Cleaner": page4,
+    "🤗Sentiment Analyser": page5,
+    "🔤Word Frequency Tab": page6,
+    "🔢Counter": page7
+}
+
+
+selected_page = st.sidebar.selectbox("Choose Your Tab", page_names_to_funcs.keys())
+page_names_to_funcs[selected_page]()
+
+side_bg = 'black.jpg'
+def sidebar_bg(side_bg):
+
+    side_bg_ext = 'black.jpg'
+
+    st.markdown(
+      f"""
+      <style>
+      [data-testid="stSidebar"] > div:first-child {{
+          background: url(data:image/{side_bg_ext};base64,{base64.b64encode(open(side_bg, "rb").read()).decode()});
+      }}
+      </style>
+      """,
+      unsafe_allow_html=True,
+      )
